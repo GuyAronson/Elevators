@@ -1,16 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Floor from "./Floor";
 
 function Building({ floorsAmount, elevatorsAmount }) {
+    /** @type {{ id: number, busy: boolean, floor: number, direction: string|null }[]} */
     const [elevators, setElevators] = useState([...new Array(floorsAmount)].map((x, i) => ({ id: i, busy: false, floor: 0, direction: null })))
-    /** @type {{elevator: number, floor: number}} */
+    /** @type {{floor: number}[]} */
     const [callsQueue, setCallsQueue] = useState([])
 
     // useEffect for callsQueue
+    useEffect(() => {
+        if (isThereIdleElevator() && callsQueue.length > 0) {
+            const call = callsQueue.pop();
+            const elevator = findClosestElevator(call.floor)
+            moveElevator(call, elevator)
+            // notify once it's done
+        }
+    }, [callsQueue]);
+
+    const isThereIdleElevator = () => {
+        return elevators.some(elevator => !elevator.busy);
+    }
 
     const callElevator = (floor) => {
-        const elevator = findClosestElevator(floor)
-        setCallsQueue(callsQueue.push({ elevator: elevator.id, floor: floor }))
+        callsQueue.push({ floor: floor })
+        setCallsQueue([...callsQueue])
     }
 
     const findClosestElevator = (floor) => {
@@ -33,10 +46,37 @@ function Building({ floorsAmount, elevatorsAmount }) {
         }
     }
 
+    const moveElevator = (call, elevator) => {
+        // if(call.floor> elevator.floor)
+        //     elevator.direction = 'up'
+        // else if(call.floor < elevator.floor)
+        //     elevator.direction = 'down'
+        const newElevators = [...elevators];
+        let elevatorToMove = newElevators.find(e => e.id === elevator.id)
+        elevatorToMove = { ...elevatorToMove, busy: true, direction: call.floor > elevatorToMove.floor ? "up" : "down" }
+        setElevators(newElevators)
+        setTimeout(() => {
+            const updatedElevators = newElevators.map(elevator => {
+                if (elevator.id === elevatorToMove.id) {
+                    return { ...elevator, floor: call.floor, busy: false, direction: null };
+                } else {
+                    return elevator;
+                }
+            });
+            setElevators(updatedElevators);
+        }, 2000)
+    }
+
     return (
         <div id='building'>
             {[...new Array(floorsAmount)].map((x, i) =>
-                <Floor key={i} id={i} floorsAmount={floorsAmount} elevatorsAmount={elevatorsAmount} elevators={elevators} callElevator={callElevator} />
+                <Floor
+                    key={i}
+                    id={i}
+                    floorsAmount={floorsAmount}
+                    elevatorsAmount={elevatorsAmount}
+                    elevators={elevators}
+                    callElevator={callElevator} />
             )}
         </div>
     );
