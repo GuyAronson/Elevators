@@ -1,12 +1,8 @@
 import { Grid, Button } from "@mui/material";
 import React, { useState } from "react";
-import { ReactComponent as ElevatorIcon } from '../elevator.svg'
+import Elevator from "./Elevator";
+import { callStates } from "../utils";
 
-const callStates = {
-    available: { key: 'available', label: 'Call', color: 'success', variant: 'contained' },
-    busy: { key: 'busy', label: 'Waiting', color: 'error', variant: 'contained' },
-    arrived: { key: 'arrived', label: 'Arrived', color: 'success', variant: 'outlined' },
-}
 function Floor({ id, elevatorsAmount, floorsAmount, elevators, callElevator }) {
     const floorNum = floorsAmount - id - 1;
     const [callState, setCallState] = useState(callStates.available);
@@ -30,7 +26,7 @@ function Floor({ id, elevatorsAmount, floorsAmount, elevators, callElevator }) {
                 {[...new Array(elevatorsAmount)].map((x, i) =>
                     <Grid item xs={1.5} key={i} >
                         <div className='floor-item'>
-                            {elevators[i] && elevators[i].floor === floorNum ? <ElevatorIcon className="elevator-icon" /> : null}
+                            {elevators[i] && elevators[i].floor === floorNum ? <Elevator status={elevators[i].status} /> : null}
                         </div>
                     </Grid>
                 )}
