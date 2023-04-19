@@ -5,7 +5,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <Building floorsAmount={8} elevatorsAmount={3} />
+      <Building floorsAmount={10} elevatorsAmount={5} />
     </div>
   );
 }

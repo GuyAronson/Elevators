@@ -1,27 +1,35 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Floor from "./Floor";
-import { elevatorStatuses } from "../utils";
+import { elevatorStatuses, delay } from "../utils";
 
 function Building({ floorsAmount, elevatorsAmount }) {
-    /** @type {{ id: number, status: string, floor: number, direction: string|null }[]} */
-    const [elevators, setElevators] = useState([...new Array(elevatorsAmount)].map((x, i) => ({ id: i, status: elevatorStatuses.available.key, floor: 0, direction: null })))
-    /** @type {{floor: number}[]} */
+    /** @type {{ id: number, status: string, floor: number}[]} */
+    const [elevators, setElevators] = useState([...new Array(elevatorsAmount)].map((x, i) => ({ id: i, status: elevatorStatuses.available.key, floor: 0, targetFloor: -1 })))
+    /** @type {{targetFloor: number}[]} */
     const [callsQueue, setCallsQueue] = useState([])
 
     const isThereIdleElevator = useCallback(() => {
         return elevators.some(elevator => elevator.status === elevatorStatuses.available.key);
     }, [elevators]);
-    const isAllElevatorIdle = useCallback(() => {
-        return elevators.every(elevator => elevator.status === elevatorStatuses.available.key);
+    const AreThereArrivedElevators = useCallback(() => {
+        return elevators.some(elevator => elevator.status === elevatorStatuses.arrived.key);
     }, [elevators]);
 
-    const callElevator = (floor) => {
+    const callElevator = (targetFloor) => {
         setCallsQueue(prevCallsQueue => {
             const newCallsQueue = [...prevCallsQueue];
-            newCallsQueue.push({ floor })
-            console.log({ newCallsQueue });
+            newCallsQueue.push({ targetFloor })
+            console.log(`callsQueue: `, ...newCallsQueue);
             return newCallsQueue;
         });
+    }
+
+    const notifyElevatorArrived = (id) => {
+        setElevators(prevElevators => {
+            prevElevators[id].floor = prevElevators[id].targetFloor
+            prevElevators[id].status = elevatorStatuses.arrived.key;
+            return [...prevElevators]
+        })
     }
 
     const findClosestElevator = useCallback((floor) => {
@@ -33,10 +41,7 @@ function Building({ floorsAmount, elevatorsAmount }) {
                 return currDistance < prevDistance ? curr : prev;
             });
         } else {
-            const elevatorsAbove = this.elevators.filter(elevator => elevator.direction === 'up' && elevator.floor <= floor);
-            const elevatorsBelow = this.elevators.filter(elevator => elevator.direction === 'down' && elevator.floor >= floor);
-            const allElevators = elevatorsAbove.concat(elevatorsBelow);
-            return allElevators.reduce((prev, curr) => {
+            return elevators.reduce((prev, curr) => {
                 const prevDistance = Math.abs(prev.floor - floor);
                 const currDistance = Math.abs(curr.floor - floor);
                 return currDistance < prevDistance ? curr : prev;
@@ -48,57 +53,55 @@ function Building({ floorsAmount, elevatorsAmount }) {
         setElevators(prevElevators => {
             return prevElevators.map(elevator => {
                 if (elevatorToMove.id === elevator.id) {
-                    return { ...elevator, status: elevatorStatuses.busy.key, floor: call.floor }
+                    return { ...elevator, status: elevatorStatuses.busy.key, targetFloor: call.targetFloor }
                 } else
                     return elevator;
             });
         })
     }, [])
 
-    // useEffect for callsQueue
     useEffect(() => {
         if (isThereIdleElevator() && callsQueue.length > 0) {
             const call = callsQueue[0]
-            console.log('handle a call: ', call);
-            const elevator = findClosestElevator(call.floor)
+            const elevator = findClosestElevator(call.targetFloor)
             moveElevator(call, elevator)
-            // notify once it's done
             setCallsQueue(prevCallsQueue => {
                 return prevCallsQueue.slice(1);
             })
         }
-    }, [callsQueue, findClosestElevator, isThereIdleElevator, moveElevator]);
+    }, [elevators, callsQueue, findClosestElevator, isThereIdleElevator, moveElevator]);
 
     useEffect(() => {
-        // Handle elevators statuses
-        if (!isAllElevatorIdle()) {
+        if (AreThereArrivedElevators()) {
             setTimeout(() => {
                 setElevators(prevElevators => {
                     return prevElevators.map(elevator => {
-                        if (elevator.status === elevatorStatuses.busy.key) {
-                            return { ...elevator, status: elevatorStatuses.arrived.key };
-                        } else if (elevator.status === elevatorStatuses.arrived.key) {
+                        if (elevator.status === elevatorStatuses.arrived.key) {
                             return { ...elevator, status: elevatorStatuses.available.key };
                         } else {
                             return elevator;
                         }
                     });
                 })
-            }, 5000)
+            }, 2000)
         }
-    }, [elevators, isAllElevatorIdle])
+    }, [elevators, AreThereArrivedElevators])
 
     return (
         <div id='building'>
-            {[...new Array(floorsAmount)].map((x, i) =>
-                <Floor
+            {[...new Array(floorsAmount)].map((x, i) => {
+                const id = floorsAmount - i - 1
+                return <Floor
                     key={i}
-                    id={i}
+                    id={id}
                     floorsAmount={floorsAmount}
                     elevatorsAmount={elevatorsAmount}
                     elevators={elevators}
-                    callElevator={callElevator} />
-            )}
+                    callElevator={callElevator}
+                    notifyElevatorArrived={notifyElevatorArrived}
+                    isElevatorArrived={elevators.some(elvtr => elvtr.status === elevatorStatuses.arrived.key && elvtr.floor === id)}
+                />
+            })}
         </div>
     );
 }

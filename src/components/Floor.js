@@ -1,32 +1,48 @@
 import { Grid, Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Elevator from "./Elevator";
 import { callStates } from "../utils";
 
-function Floor({ id, elevatorsAmount, floorsAmount, elevators, callElevator }) {
-    const floorNum = floorsAmount - id - 1;
+function Floor({ id, elevatorsAmount, elevators, callElevator, isElevatorArrived, notifyElevatorArrived }) {
     const [callState, setCallState] = useState(callStates.available);
+    const floorItem = useRef()
 
     const handleCall = (e) => {
         if (callState.key !== callStates.available.key)
             return;
 
-        setCallState(callStates.busy)
-        callElevator(floorNum);
-        // after notification
-        setCallState(callStates.arrived)
-        setTimeout(() => setCallState(callStates.available), 2000)
+        setCallState(callStates.busy);
+        callElevator(id);
     }
+    useEffect(() => {
+        if (isElevatorArrived) {
+            setCallState(callStates.arrived);
+            setTimeout(() => {
+                setCallState(callStates.available)
+                isElevatorArrived = false;
+            }, 2000);
+        }
+    }, [isElevatorArrived])
+
     return (
         <div className='floor'>
             <Grid container >
                 <Grid item xs={2} className="floor-text-box">
-                    <p className="floor-text">{floorNum === 0 ? `Ground Floor` : floorNum + `th`}</p>
+                    <p className="floor-text">{id === 0 ? `Ground Floor` : id + `th`}</p>
                 </Grid>
                 {[...new Array(elevatorsAmount)].map((x, i) =>
                     <Grid item xs={1.5} key={i} >
-                        <div className='floor-item'>
-                            {elevators[i] && elevators[i].floor === floorNum ? <Elevator status={elevators[i].status} /> : null}
+                        <div className='floor-item' ref={floorItem}>
+                            {elevators[i] && elevators[i].floor === id ?
+                                <Elevator
+                                    id={elevators[i].id}
+                                    status={elevators[i].status}
+                                    floor={elevators[i].floor}
+                                    targetFloor={elevators[i].targetFloor}
+                                    notifyElevatorArrived={notifyElevatorArrived}
+                                    floorSize={floorItem?.current?.clientHeight}
+                                />
+                                : null}
                         </div>
                     </Grid>
                 )}
