@@ -1,6 +1,7 @@
 # Elevator App
 
-A web application that manages a building with multiple elevators. Users can call an elevator by clicking on the `call` button, and the elevator will move towards the requested floor and stop by it.
+A web application that manages a building with multiple elevators. 
+Users can call an elevator by clicking on the `call` button, and the elevator will move towards the requested floor and stop by it.
 
 ![צילום מסך 2023-04-20 162204](https://user-images.githubusercontent.com/83305443/233379781-f4089d3b-123f-4f8d-a3bc-40eb81bd68ec.png)
 
