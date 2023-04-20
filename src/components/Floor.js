@@ -31,7 +31,7 @@ function Floor({ id, elevatorsAmount, elevators, callElevator, isElevatorArrived
                     <p className="floor-text">{id === 0 ? `Ground Floor` : id + `th`}</p>
                 </Grid>
                 {[...new Array(elevatorsAmount)].map((x, i) =>
-                    <Grid item xs={1.5} key={i} >
+                    <Grid item xs={(8 / elevatorsAmount)} key={i} >
                         <div className='floor-item' ref={floorItem}>
                             {elevators[i] && elevators[i].floor === id ?
                                 <Elevator

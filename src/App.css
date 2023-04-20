@@ -1,5 +1,5 @@
 .App {
-    width: 65%;
+    width: 70%;
     height: auto;
     background-color: lightgrey;
     position: relative;
@@ -8,7 +8,7 @@
 }
 
 #building {
-    width: 90%;
+    width: 100%;
     margin: auto;
     margin-top: 1%;
 }
