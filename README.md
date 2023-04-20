@@ -1,74 +1,32 @@
-<<<<<<< HEAD
-# Elevators
-=======
-# Getting Started with Create React App
+# Elevator App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web application that manages a building with multiple elevators. Users can call an elevator by clicking on the `call` button, and the elevator will move towards the requested floor and stop by it.
 
-## Available Scripts
+![צילום מסך 2023-04-20 162204](https://user-images.githubusercontent.com/83305443/233379781-f4089d3b-123f-4f8d-a3bc-40eb81bd68ec.png)
 
-In the project directory, you can run:
+The finding elevator algorithm finds the closest elevator to the requested floor.
+A busy elevator **can not be interrupted**, therefore, requesting another elevator from any other floor will call a different elevator.
+There is **calls queue** implemented to never lose any request for an elevator
 
-### `npm start`
+![צילום מסך 2023-04-20 162242](https://user-images.githubusercontent.com/83305443/233379820-db92c314-e6cc-43ff-b9f1-aa83ef655247.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This project is implemented using React.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installing
 
-### `npm test`
+To get started, make sure you have [Node.js](https://nodejs.org/) installed on your machine. You can then install the necessary dependencies by running the following command:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+npm install
+```
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Running the App
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Once you've installed the dependencies, you can run the app using the following command:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+npm start
+```
+This will start the development server and open the app in your default browser. The page will automatically reload if you make changes to the code.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
->>>>>>> master
