@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Floor from "./Floor";
-import { elevatorStatuses, delay } from "../utils";
+import { elevatorStatuses } from "../utils";
 
 function Building({ floorsAmount, elevatorsAmount }) {
     /** @type {{ id: number, status: string, floor: number}[]} */
