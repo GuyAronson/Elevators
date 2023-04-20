@@ -9,7 +9,7 @@ function App() {
         Recommended to use 3-10 floors
         And 4-10 elevators
       */}
-      <Building floorsAmount={3} elevatorsAmount={10} />
+      <Building floorsAmount={10} elevatorsAmount={6} />
     </div>
   );
 }
